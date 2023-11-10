@@ -4,6 +4,8 @@
  */
 package com.mycompany.absensi;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.table.DefaultTableModel;
@@ -70,7 +72,15 @@ public class FormAbsensi extends javax.swing.JFrame {
             new String [] {
                 "Kode", "Nama", "Shift", "Jam Masuk", "Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblAbsensi);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -128,19 +138,32 @@ public class FormAbsensi extends javax.swing.JFrame {
         if (txtName.getText().equals("") || txtKode.getText().equals("") || pagi.isSelected() == false && siang.isSelected() == false) {
             JOptionPane.showMessageDialog(this, "Isi Form dengan benar!!");
         } else {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
             JRadioButton selectedButton = null;
+            String status = "";
+            
             if (pagi.isSelected()) {
                 selectedButton = pagi;
             } else if (siang.isSelected()) {
                 selectedButton = siang;
             }
-            String data[] = {txtKode.getText(), txtName.getText(), selectedButton.getText()};
+            
+//            if(selectedButton == pagi){
+//                if(dtf.format(now) == "13:50:00"){
+//                    status = "Telat";
+//                } else {
+//                    status = "Tepat Waktu";
+//                }
+//            }
+            
+            String data[] = {txtKode.getText(), txtName.getText(), selectedButton.getText(), dtf.format(now)};
             DefaultTableModel tblModel = (DefaultTableModel) tblAbsensi.getModel();
             tblModel.addRow(data);
             JOptionPane.showMessageDialog(this, "Terima Kasih sudah absen");
             txtName.setText("");
             txtKode.setText("");
-            selectedButton.setSelected(false);
+//            selectedButton.setSelected(false);
             //            if (pagi.isSelected() == true) {
             //                pagi.setText("Pagi");
             //            } else if (siang.isSelected() == true) {
