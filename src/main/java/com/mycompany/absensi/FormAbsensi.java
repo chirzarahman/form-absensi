@@ -4,10 +4,6 @@
  */
 package com.mycompany.absensi;
 
-import java.awt.Color;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
@@ -25,6 +21,59 @@ public class FormAbsensi extends javax.swing.JFrame {
      */
     public FormAbsensi() {
         initComponents();
+    }
+
+    private void datatable() {
+        int hours, minutes, seconds;
+        if (txtName.getText().equals("") || txtKode.getText().equals("") || pagi.isSelected() == false && siang.isSelected() == false) {
+            JOptionPane.showMessageDialog(this, "Isi Form dengan benar!!");
+        } else {
+            GregorianCalendar gc = new GregorianCalendar();
+            hours = gc.get(Calendar.HOUR);
+            minutes = gc.get(Calendar.MINUTE);
+            seconds = gc.get(Calendar.SECOND);
+            JRadioButton selectedButton = null;
+            String status = "";
+            String time = (hours + "" + minutes);
+            int number = Integer.parseInt(time);
+
+            if (pagi.isSelected()) {
+                selectedButton = pagi;
+            } else if (siang.isSelected()) {
+                selectedButton = siang;
+            }
+
+            if (selectedButton == pagi) {
+                if (number >= 630) {
+                    status = "Telat";
+                } else {
+                    status = "Tepat Waktu";
+                }
+            } else if (selectedButton == siang) {
+                if (number >= 715) {
+                    status = "Telat";
+                } else {
+                    status = "Tepat Waktu";
+                }
+            }
+
+            DefaultTableModel tblModel = (DefaultTableModel) tblAbsensi.getModel();
+            String data[] = {Getid(tblModel.getRowCount()), txtKode.getText(), txtName.getText(), selectedButton.getText(), (hours + ":" + minutes + ":" + seconds), status};
+            tblModel.addRow(data);
+            JOptionPane.showMessageDialog(this, "Terima Kasih sudah absen");
+            txtName.setText("");
+            txtKode.setText("");
+            System.out.println(tblModel.getRowCount() + "njfdnjjdjbjn");
+        }
+    }
+
+    public String Getid(int values) {
+        int i;
+        for (i = 1; i <= values; i++) {
+            System.out.println(values);
+        }
+        String convert = Integer.toString(i);
+        return convert;
     }
 
     /**
@@ -74,12 +123,19 @@ public class FormAbsensi extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Kode", "Nama", "Shift", "Jam Masuk", "Status"
+                "ID", "Kode", "Nama", "Shift", "Jam Masuk", "Status"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -139,46 +195,7 @@ public class FormAbsensi extends javax.swing.JFrame {
 
     private void btnAbsenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbsenActionPerformed
         // TODO add your handling code here:
-        int hours, minutes, seconds;
-        if (txtName.getText().equals("") || txtKode.getText().equals("") || pagi.isSelected() == false && siang.isSelected() == false) {
-            JOptionPane.showMessageDialog(this, "Isi Form dengan benar!!");
-        } else {
-            GregorianCalendar gc = new GregorianCalendar();
-            hours = gc.get(Calendar.HOUR);
-            minutes = gc.get(Calendar.MINUTE);
-            seconds = gc.get(Calendar.SECOND);
-            JRadioButton selectedButton = null;
-            String status = "";
-            String time = (hours + "" + minutes);
-            int number = Integer.parseInt(time);
-
-            if (pagi.isSelected()) {
-                selectedButton = pagi;
-            } else if (siang.isSelected()) {
-                selectedButton = siang;
-            }
-
-            if (selectedButton == pagi) {
-                if (number >= 330) {
-                    status = "Telat";
-                } else {
-                    status = "Tepat Waktu";
-                }
-            } else if (selectedButton == siang) {
-                if (number >= 315) {
-                    status = "Telat";
-                } else {
-                    status = "Tepat Waktu";
-                }
-            }
-
-            String data[] = {txtKode.getText(), txtName.getText(), selectedButton.getText(), (hours + ":" + minutes + ":" + seconds), status};
-            DefaultTableModel tblModel = (DefaultTableModel) tblAbsensi.getModel();
-            tblModel.addRow(data);
-            JOptionPane.showMessageDialog(this, "Terima Kasih sudah absen");
-            txtName.setText("");
-            txtKode.setText("");
-        }
+        datatable();
     }//GEN-LAST:event_btnAbsenActionPerformed
 
     /**

@@ -3,13 +3,6 @@
  */
 package com.mycompany.absensi;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 /**
  *
  * @author ASUS14
@@ -31,6 +24,11 @@ public class Absensi {
 //        int number = Integer.parseInt(time);
 //
 //        System.out.println(number);
+
+//        int dataakhir = 8;
+//        for (int i = 1; i <= dataakhir; i++) {
+//            System.out.println(i);
+//        }
 
     }
 }
