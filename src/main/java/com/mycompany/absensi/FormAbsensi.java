@@ -4,8 +4,12 @@
  */
 package com.mycompany.absensi;
 
+import java.awt.Color;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.table.DefaultTableModel;
@@ -135,40 +139,45 @@ public class FormAbsensi extends javax.swing.JFrame {
 
     private void btnAbsenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbsenActionPerformed
         // TODO add your handling code here:
+        int hours, minutes, seconds;
         if (txtName.getText().equals("") || txtKode.getText().equals("") || pagi.isSelected() == false && siang.isSelected() == false) {
             JOptionPane.showMessageDialog(this, "Isi Form dengan benar!!");
         } else {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
+            GregorianCalendar gc = new GregorianCalendar();
+            hours = gc.get(Calendar.HOUR);
+            minutes = gc.get(Calendar.MINUTE);
+            seconds = gc.get(Calendar.SECOND);
             JRadioButton selectedButton = null;
             String status = "";
-            
+            String time = (hours + "" + minutes);
+            int number = Integer.parseInt(time);
+
             if (pagi.isSelected()) {
                 selectedButton = pagi;
             } else if (siang.isSelected()) {
                 selectedButton = siang;
             }
-            
-//            if(selectedButton == pagi){
-//                if(dtf.format(now) == "13:50:00"){
-//                    status = "Telat";
-//                } else {
-//                    status = "Tepat Waktu";
-//                }
-//            }
-            
-            String data[] = {txtKode.getText(), txtName.getText(), selectedButton.getText(), dtf.format(now)};
+
+            if (selectedButton == pagi) {
+                if (number >= 330) {
+                    status = "Telat";
+                } else {
+                    status = "Tepat Waktu";
+                }
+            } else if (selectedButton == siang) {
+                if (number >= 315) {
+                    status = "Telat";
+                } else {
+                    status = "Tepat Waktu";
+                }
+            }
+
+            String data[] = {txtKode.getText(), txtName.getText(), selectedButton.getText(), (hours + ":" + minutes + ":" + seconds), status};
             DefaultTableModel tblModel = (DefaultTableModel) tblAbsensi.getModel();
             tblModel.addRow(data);
             JOptionPane.showMessageDialog(this, "Terima Kasih sudah absen");
             txtName.setText("");
             txtKode.setText("");
-//            selectedButton.setSelected(false);
-            //            if (pagi.isSelected() == true) {
-            //                pagi.setText("Pagi");
-            //            } else if (siang.isSelected() == true) {
-            //                siang.setText("Siang");
-            //            }
         }
     }//GEN-LAST:event_btnAbsenActionPerformed
 
